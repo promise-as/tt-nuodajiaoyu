@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "tag": "/components/tag",
+    "ts-format-time": "/components/tsFormatTime"
+  }
+}
