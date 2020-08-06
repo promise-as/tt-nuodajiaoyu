@@ -1,5 +1,5 @@
 {
-    "name" : "wx-jiaoyuxuetang",
+    "name" : "tt-nuodajiaoyu",
     "appid" : "__UNI__23387C6",
     "description" : "",
     "versionName" : "1.0.0",
@@ -50,7 +50,9 @@
             /* ios打包配置 */
             "ios" : {},
             /* SDK配置 */
-            "sdkConfigs" : {}
+            "sdkConfigs" : {
+                "oauth" : {}
+            }
         }
     },
     /* 快应用特有相关 */

@@ -46,7 +46,7 @@ const store = new Vuex.Store({
 				uni.checkSession({
 					success: res => {
 						uni.login({
-							provider: 'weixin',
+							// provider: 'weixin',
 							success: res => {
 								console.log(res);
 								var code = res.code;
@@ -100,7 +100,7 @@ const store = new Vuex.Store({
 					},
 					fail: () => {
 						uni.login({
-							provider: 'weixin',
+							// provider: 'weixin',
 							success: res => {
 								var tit = '系统繁忙，请重试！'
 								showtoast(tit);

@@ -8,12 +8,7 @@
 		{
 			"path": "pages/details/details",
 			"style": {
-				"navigationBarTitleText": "课程详情",
-				"usingComponents": {
-					// #ifdef  MP-WEIXIN
-					"txv-video": "plugin://tencentvideo/video"
-					// #endif
-				}
+				"navigationBarTitleText": "课程详情"
 			}
 		}
     ],

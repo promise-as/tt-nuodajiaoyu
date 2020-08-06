@@ -69,9 +69,10 @@ export default {
 		};
 	},
 	onLoad() {
-		this.getXnLive();
 		
 		this.getBanner();
+		
+		this.getXnLive();
 		
 		this.nearLive();
 		
@@ -79,7 +80,7 @@ export default {
 			withShareTicket: true
 		});
 	},
-	onReachBottom() {
+	onReachBottom() { //上拉加载
 		/*
 		 * loadingData：是否正在请求数据
 		 */
@@ -116,7 +117,7 @@ export default {
 			this.active = isback;
 			// 1.获取直播列表
 			util.http(this.url + '/getDyLive', data, res => {
-				console.log(res, 111)
+				// console.log(res, 111)
 				if (res.data.msg == 'OK') {
 					var liveList = res.data.data;
 					liveList = this.setState(liveList);

@@ -4,13 +4,24 @@
 		<view class="public-con" v-if="!showVideo"><uParse :content="detail.intro" /></view>
 		<view class="btn-box" v-if="!showVideo">
 			<view class="live-btn" v-if="hasLogin && detail.id" @tap="goLive()">{{ btnTxt }}</view>
-			<button v-if="!hasLogin" open-type="getPhoneNumber" @tap="myLogin" class="live-btn">{{ btnTxt }}</button>
+			<button v-if="!hasLogin" open-type="getPhoneNumber" @getphonenumber="myLogin" class="live-btn">{{ btnTxt }}</button>
 		</view>
 		<!-- 回放界面 -->
 		<view class="back-con-box" v-if="showVideo">
 			<view class="h1 one bgw">{{ detail.title }}</view>
 			<!-- 回放视频 -->
-			<view class="video-box"><txv-video :vid="vid" :autoplay="true" playerid="txv1"></txv-video></view>
+			<!-- <view class="video-box"><txv-video :vid="vid" :autoplay="true" playerid="txv1"></txv-video></view> -->
+			<video
+			  src="http://sf1-ttcdn-tos.pstatp.com/obj/ttfe/test/test-upload.mp4"
+			  id="myVideo"
+			  style="width: 240px; height: 180px;"
+			/>
+			
+			<view style="display: flex; justify-content: space-between; align-items: center;">
+			  <button bindtap="play" size="mini">Play</button>
+			  <button bindtap="pause" size="mini">Pause</button>
+			  <button bindtap="stop" size="mini">Stop</button>
+			</view>
 			<view class="con bgw">
 				<view class="lesson">
 					<view class="tabs">
@@ -67,14 +78,7 @@ export default {
 		};
 	},
 	onLoad(options) {
-		console.log(1234)
-		// console.log(options, 111) // state = 1
-		uni.login({
-			provider: 'toutiao',
-			success: res => {
-				console.log(res);
-			}
-		});
+		uni.login({})
 		this.state = options.state;
 		this.id = options.id;
 		this.getLive();
@@ -83,7 +87,21 @@ export default {
 		uni.showShareMenu({
 			withShareTicket: true
 		});
+		
+		
 	},
+	onReady: function () {
+	    this.videoCtx = tt.createVideoContext("myVideo");
+	  },
+	  play: function () {
+	    this.videoCtx.play();
+	  },
+	  pause: function () {
+	    this.videoCtx.pause();
+	  },
+	  stop: function () {
+	    this.videoCtx.stop();
+	  },
 	computed: {
 		...mapState(['hasLogin', 'user'])
 	},
@@ -96,6 +114,7 @@ export default {
 				id: this.id,
 				token: md5('THEA2020.$' + this.id)
 			};
+			// 2.获取直播详情
 			util.http(this.url + '/liveDyInfoId', data, res => {
 				var data = res.data.data;
 				if (data.backurl.length > 0) {
@@ -106,35 +125,31 @@ export default {
 			});
 		},
 		myLogin(e) {
-			// tt.login({
-			//   success(res) {
-			//     console.log(`login调用成功${res.code} ${res.anonymousCode}`);
-			//   },
-			//   fail(res) {
-			//     console.log(`login调用失败`);
-			//   },
-			// });
-			
-			// console.log(e.detail);
-			// var that = this;
-			// if (e.detail.errMsg == 'getPhoneNumber:fail user deny') {
-			// 	return false;
-			// } else {
-			// 	this.goLogin(e.detail).then(() => {
-			// 		that.goLive();
-			// 	});
-			// }
+			console.log(e.detail.errMsg, 123);
+			var that = this;
+			if (e.detail.errMsg == 'getPhoneNumber:fail user deny') {
+				return false;
+			} else {
+				// console.log(e.detail, '授权成功')
+				// this.goLogin(e.detail).then(() => {
+				// 	that.goLive();
+				// });
+				that.goLive();
+			}
 		},
 		goLive() {
+			console.log('去看直播')
 			var user = this.user;
+			console.log(user, 111) // user: null
 			var detail = this.detail;
 			var that = this;
 			var data = {
 				title: detail.title,
 				starttime: detail.starttime,
-				openid: user.openid,
-				phone: user.phone
+				// openid: user.openid,
+				// phone: user.phone
 			};
+			
 			if (this.state == 0) {
 				var liveArr = user.liveArr || [];
 				// 正在直播
@@ -177,6 +192,7 @@ export default {
 								success(res) {
 									console.log('订阅消息订阅消息', res);
 									if ((res.errMsg = 'requestSubscribeMessage:ok')) {
+										// url
 										util.http(this.url + '/recordmessagext', data, res => {
 											console.log('记录消息记录消息记录消息', res);
 										});
